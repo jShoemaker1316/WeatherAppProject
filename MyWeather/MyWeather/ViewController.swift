@@ -41,6 +41,7 @@ var models = [Weather]()
 
     }
 //26 call the setupLocation() func to make it appear. We need to create a viewDidAppear for that. Minutemakrer 14:30
+//27 Dark SKY API is no longer existent. so....do the steps, and a new API will be inserted. Will try OpenWeatherMap.Org
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setupLocation()
@@ -70,6 +71,20 @@ var models = [Weather]()
         }
         let long = currentLocation.coordinate.longitude
         let lat = currentLocation.coordinate.latitude
+ //28 get the URL with request
+        let url = "https://api.openweathermap.org/data/2.5/onecall?lat=\(lat)&lon=\(long)&exclude=minutely&appid={3141b6b824a580737b854723c94aa7b6}"
+//29 now a URLSession will make the actual request.
+        URLSession.shared.dataTask(with: URL(string: url)!, completionHandler: { data, response, error in
+ //30 in here we need validation and convert data into models/some object to use in code, we also need to update user interface
+//31 here is easy validation
+            guard let data = data, error == nil else {
+                print("something went wrong")
+                return
+            }
+//32 convert data to models/some object with JSOn Decoder
+        })
+        
+        
         print("\(long) | \(lat)")
 //24 after we write this go to info.plist and write a string required by apple when requesting any permission. add Privacy Location When in Use and the String = Please Allow location to see local weather
 //25 also go to features/location/apple and set that
@@ -87,7 +102,110 @@ var models = [Weather]()
 }
 
 //8 create the struct just to avoid errors at first. So an empty struct here
-struct Weather {
-    
+//33 create a codable weather struct for JSOn Decoder. Will delete thios weather struct and instea duse one we copied from the api
+struct WeatherResponse: Codable {
+    let latitude: Float
+    let longitude: Float
+    let timezone: String
+    let currently: CurrentWeather
+    let hourly: HourlyWeather
+    let daily: DailyWeather
+    let offset: Float
 }
 
+struct CurrentWeather: Codable {
+    let time: Int
+    let summary: String
+    let icon: String
+    let nearestStormDistance: Int
+    let nearestStormBearing: Int
+    let precipIntensity: Int
+    let precipProbability: Int
+    let temperature: Double
+    let apparentTemperature: Double
+    let dewPoint: Double
+    let humidity: Double
+    let pressure: Double
+    let windSpeed: Double
+    let windGust: Double
+    let windBearing: Int
+    let cloudCover: Double
+    let uvIndex: Int
+    let visibility: Double
+    let ozone: Double
+}
+
+struct DailyWeather: Codable {
+    let summary: String
+    let icon: String
+    let data: [DailyWeatherEntry]
+}
+
+struct DailyWeatherEntry: Codable {
+    let time: Int
+    let summary: String
+    let icon: String
+    let sunriseTime: Int
+    let sunsetTime: Int
+    let moonPhase: Double
+    let precipIntensity: Float
+    let precipIntensityMax: Float
+    let precipIntensityMaxTime: Int
+    let precipProbability: Double
+    let precipType: String?
+    let temperatureHigh: Double
+    let temperatureHighTime: Int
+    let temperatureLow: Double
+    let temperatureLowTime: Int
+    let apparentTemperatureHigh: Double
+    let apparentTemperatureHighTime: Int
+    let apparentTemperatureLow: Double
+    let apparentTemperatureLowTime: Int
+    let dewPoint: Double
+    let humidity: Double
+    let pressure: Double
+    let windSpeed: Double
+    let windGust: Double
+    let windGustTime: Int
+    let windBearing: Int
+    let cloudCover: Double
+    let uvIndex: Int
+    let uvIndexTime: Int
+    let visibility: Double
+    let ozone: Double
+    let temperatureMin: Double
+    let temperatureMinTime: Int
+    let temperatureMax: Double
+    let temperatureMaxTime: Int
+    let apparentTemperatureMin: Double
+    let apparentTemperatureMinTime: Int
+    let apparentTemperatureMax: Double
+    let apparentTemperatureMaxTime: Int
+}
+
+struct HourlyWeather: Codable {
+    let summary: String
+    let icon: String
+    let data: [HourlyWeatherEntry]
+}
+
+struct HourlyWeatherEntry: Codable {
+    let time: Int
+    let summary: String
+    let icon: String
+    let precipIntensity: Float
+    let precipProbability: Double
+    let precipType: String?
+    let temperature: Double
+    let apparentTemperature: Double
+    let dewPoint: Double
+    let humidity: Double
+    let pressure: Double
+    let windSpeed: Double
+    let windGust: Double
+    let windBearing: Int
+    let cloudCover: Double
+    let uvIndex: Int
+    let visibility: Double
+    let ozone: Double
+}
