@@ -11,6 +11,7 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 //OpenWeatherMap.org will replace dark sky weather api: https://openweathermap.org/api/one-call-api
+    //will do at end
 //API_Key is 3141b6b824a580737b854723c94aa7b6
 //API call is https://api.openweathermap.org/data/2.5/onecall?lat=33.441792&lon=-94.037689&exclude=hourly,daily&appid={YOUR API KEY}
 
