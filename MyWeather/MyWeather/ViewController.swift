@@ -22,6 +22,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //7 now create an array for models of weather objects
 //35 replace weather with DailyWeatherEntry
 var models = [DailyWeatherEntry]()
+//90 add in an array for Hourly
+    var hourlyModels = [HourlyWeatherEntry]()
     
 //17 create a LocationManager
     let locationManager = CLLocationManager()
@@ -107,6 +109,9 @@ var models = [DailyWeatherEntry]()
 //65 we are gonna assign current weather data to a property so we can access it. create a var for currentWeather above
             let current = result.currently
             self.current = current
+//91 now load in the hourly data
+            self.hourlyModels = result.hourly.data
+            
 //40 update User Interface to tell program that the stuff in this isnt on main thread. for faster reload
             DispatchQueue.main.async {
                 self.table.reloadData()
@@ -156,14 +161,32 @@ var models = [DailyWeatherEntry]()
         
         return headerView
     }
-    
+  
+//87 now we need new section for returning rows
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
     
 //11 we also need to implement table func numberOfRows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//88 update right above the return models.count. 1 cell because its a collectionTableViewCell OR Return models count as before
+        if section == 0 {
+            return 1
+        }
+        
         return models.count
     }
 //12 now a func cellForRow and for now return UITableViewCell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//89 now update this tableView to add an if-let statement to add in the hourly table view
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: HourlyTableViewCell.identifier, for: indexPath) as! HourlyTableViewCell
+//92 pass in the array property we just created in step 90. NOW WE WILL SETUP HOURLY.XIB
+            cell.configure(with: hourlyModels)
+            cell.backgroundColor = UIColor(red: 52/255.0, green: 109/255.0, blue: 179/255.0, alpha: 1.0)
+            return cell
+        }
+        
 //41 now we need to implement the weather cell (later the hourly). right click on WeatherTableViewCell and jump to definition. then add a func to configure the cell "func configure(with model: DailyWeatherEntry) {}"
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
 //43 now we call that func within the definition
